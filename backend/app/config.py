@@ -1,7 +1,7 @@
 from pydantic_settings import BaseSettings,SettingsConfigDict
 class Settings(BaseSettings):
  database_url:str='postgresql+psycopg://postgres:postgres@localhost:5432/weirdoezzz'
- frontend_url:str='http://localhost:5173'
+ frontend_url: str = "https://weirdoezzz-registration.vercel.app"
  google_sheet_id:str=''
  google_service_account_json:str=''
  admin_username:str='admin'
