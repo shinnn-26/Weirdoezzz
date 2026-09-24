@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+import logging
 
 from app.database.db import get_db
 from app.models.registration import Registration
@@ -7,6 +8,8 @@ from app.schemas.registration import RegistrationCreate
 from app.services.sheets import append_registration
 
 router = APIRouter()
+
+logger = logging.getLogger(__name__)
 
 
 @router.post("/register")
@@ -50,21 +53,25 @@ def create(
         team_name=payload.team_name
     )
 
-    # Save registration to PostgreSQL
+    # Save to Neon
     db.add(r)
     db.commit()
     db.refresh(r)
 
-    # Sync registration to Google Sheets
+    logger.warning("=== REGISTRATION SAVED TO NEON: %s ===", r.registration_id)
+    logger.warning("=== STARTING GOOGLE SHEETS SYNC ===")
+
     try:
         append_registration(r)
+
+        logger.warning("=== GOOGLE SHEETS SYNC SUCCESS ===")
 
         r.sheet_synced = True
         r.sheet_error = None
         db.commit()
 
     except Exception as e:
-        print("GOOGLE SHEETS ERROR:", repr(e))
+        logger.exception("=== GOOGLE SHEETS SYNC FAILED ===")
 
         r.sheet_synced = False
         r.sheet_error = str(e)
