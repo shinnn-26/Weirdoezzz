@@ -4,7 +4,7 @@ from slowapi import Limiter,_rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 from app.config import settings
-from app.database.db import Base,engine
+from app.database.db import Base,engine,ensure_schema_compatibility
 from app.routes.register import router as register_router
 from app.routes.admin import router as admin_router
 app=FastAPI(title='WEIRDOEZZZ Auditions API',version='1.0.0')
@@ -20,6 +20,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 Base.metadata.create_all(bind=engine)
+try:
+    ensure_schema_compatibility()
+except Exception:
+    pass
 app.include_router(register_router,prefix='/api');app.include_router(admin_router,prefix='/api')
 @app.get('/health')
 def health(): return {'status':'ok'}
