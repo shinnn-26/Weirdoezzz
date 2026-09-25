@@ -1,4 +1,5 @@
-const API = import.meta.env.VITE_API_URL || 'https://weirdoezzz.onrender.com';
+const configuredApi=(import.meta.env.VITE_API_URL || 'https://weirdoezzz.onrender.com').replace(/\/$/,'');
+const API=configuredApi.endsWith('/api')?configuredApi:`${configuredApi}/api`;
 async function request(path, options={}){
   const res=await fetch(`${API}${path}`,{headers:{'Content-Type':'application/json',...(options.headers||{})},...options});
   const data=await res.json().catch(()=>({detail:'Unexpected server response'}));

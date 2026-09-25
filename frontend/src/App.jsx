@@ -7,7 +7,7 @@ import {Admin} from './pages/Admin';
 
 export default function App(){
  const [open,setOpen]=useState(false); const nav=useNavigate();
- const links=[['about','About'],['audition','Audition'],['gallery','Gallery'],['register','Register'],['contact','Contact']];
+ const links=[['about','About'],['gallery','Gallery'],['register','Register'],['contact','Contact']];
  return <Routes>
   <Route path="/admin" element={<Admin/>}/>
   <Route path="*" element={<>
